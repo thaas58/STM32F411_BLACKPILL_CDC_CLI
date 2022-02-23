@@ -12,10 +12,10 @@
 #include "main.h"
 #include "cmsis_os.h"
 
-uint8_t buffer_data[64];
-uint8_t buffer_index;
-uint32_t buffer_length;
-bool data_buffer_ready = false;
+static uint8_t buffer_data[64];
+static uint8_t buffer_index;
+static uint32_t buffer_length;
+static bool data_buffer_ready = false;
 
 void DispatcherTask(void *argument);
 
