@@ -96,7 +96,7 @@ char *FreeRTOS_CLIGetOutputBuffer( void );
 const char *FreeRTOS_CLIGetParameter( const char *pcCommandString, UBaseType_t uxWantedParameter, BaseType_t *pxParameterStringLength );
 
 void vRegisterCLICommands( void );
-void vUARTCommandConsoleStart( uint16_t usStackSize, UBaseType_t uxPriority );
+void vCommandConsoleStart( uint16_t usStackSize, UBaseType_t uxPriority );
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
