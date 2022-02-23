@@ -75,7 +75,7 @@ available. */
 /*
  * The task that implements the command console processing.
  */
-static void prvUARTCommandConsoleTask( void *pvParameters );
+static void prvCommandConsoleTask( void *pvParameters );
 //void vUARTCommandConsoleStart( uint16_t usStackSize, UBaseType_t uxPriority );
 
 /*-----------------------------------------------------------*/
@@ -94,14 +94,14 @@ static SemaphoreHandle_t xTxMutex = NULL;
 
 /*-----------------------------------------------------------*/
 
-void vUARTCommandConsoleStart( uint16_t usStackSize, UBaseType_t uxPriority )
+void vCommandConsoleStart( uint16_t usStackSize, UBaseType_t uxPriority )
 {
 	/* Create the semaphore used to access the UART Tx. */
 	xTxMutex = xSemaphoreCreateMutex();
 	configASSERT( xTxMutex );
 
 	/* Create that task that handles the console itself. */
-	xTaskCreate( 	prvUARTCommandConsoleTask,	/* The task that implements the command console. */
+	xTaskCreate( 	prvCommandConsoleTask,	/* The task that implements the command console. */
 					"CLI",						/* Text name assigned to the task.  This is just to assist debugging.  The kernel does not use this name itself. */
 					usStackSize,				/* The size of the stack allocated to the task. */
 					NULL,						/* The parameter is not used, so NULL is passed. */
@@ -132,7 +132,7 @@ uint8_t CDC_Transmit_Wait(uint8_t* Buf, uint16_t Len)
   return result;
 }
 
-static void prvUARTCommandConsoleTask( void *pvParameters )
+static void prvCommandConsoleTask( void *pvParameters )
 {
 signed char cRxedChar;
 uint8_t ucInputIndex = 0;

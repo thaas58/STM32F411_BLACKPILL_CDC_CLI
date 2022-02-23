@@ -138,7 +138,7 @@ int main(void)
   /* add threads, ... */
   DispatcherThreadInit();
   //vUARTCommandConsoleStart(configUART_COMMAND_CONSOLE_STACK_SIZE,configUART_COMMAND_CONSOLE_TASK_PRIORITY);
-  vUARTCommandConsoleStart(configUART_COMMAND_CONSOLE_STACK_SIZE,(osPriority_t) osPriorityNormal);
+  vCommandConsoleStart(configUART_COMMAND_CONSOLE_STACK_SIZE,(osPriority_t) osPriorityNormal);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
