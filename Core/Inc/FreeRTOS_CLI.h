@@ -98,6 +98,9 @@ const char *FreeRTOS_CLIGetParameter( const char *pcCommandString, UBaseType_t u
 void vRegisterCLICommands( void );
 void vCommandConsoleStart( uint16_t usStackSize, UBaseType_t uxPriority );
 
+#define MMIO16(addr)  (*(volatile uint16_t *)(addr))
+#define MMIO32(addr)  (*(volatile uint32_t *)(addr))
+#define CPUID 		0xE000ED00
 /* *INDENT-OFF* */
 #ifdef __cplusplus
     }

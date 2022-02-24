@@ -58,10 +58,14 @@
  * The function that registers the commands that are defined within this file.
  */
 //void vRegisterCLICommands( void );
-
+/*
+ * Implements the get_cpuid command.
+ */
+static BaseType_t prvCpuidCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString );
 /*
  * Implements the task-stats command.
  */
+
 static BaseType_t prvTaskStatsCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString );
 
 /*
@@ -94,6 +98,18 @@ static BaseType_t prvParameterEchoCommand( char *pcWriteBuffer, size_t xWriteBuf
 #if( configINCLUDE_TRACE_RELATED_CLI_COMMANDS == 1 )
 	static BaseType_t prvStartStopTraceCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString );
 #endif
+
+/*
+ * Structure that defines the "get_cpuid" command line command.  This
+ * returns data from the CPUID register.
+ */
+static const CLI_Command_Definition_t xCpuid =
+{
+	"get_cpuid", /* The command string to type. */
+	"\r\nget_cpuid:\r\n Displays data from the CPUID register\r\n",
+	prvCpuidCommand, /* The function to run. */
+	0 /* No parameters are expected. */
+};
 
 /* Structure that defines the "task-stats" command line command.  This generates
 a table that gives information on each task in the system. */
@@ -167,6 +183,7 @@ static const CLI_Command_Definition_t xParameterEcho =
 void vRegisterCLICommands( void )
 {
 	/* Register all the command line commands defined immediately above. */
+	FreeRTOS_CLIRegisterCommand( &xCpuid );
 	FreeRTOS_CLIRegisterCommand( &xTaskStats );	
 	FreeRTOS_CLIRegisterCommand( &xThreeParameterEcho );
 	FreeRTOS_CLIRegisterCommand( &xParameterEcho );
@@ -188,6 +205,22 @@ void vRegisterCLICommands( void )
 		FreeRTOS_CLIRegisterCommand( &xStartStopTrace );
 	}
 	#endif
+}
+/*-----------------------------------------------------------*/
+
+static BaseType_t prvCpuidCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString )
+{
+	/* Remove compile time warnings about unused parameters, and check the
+	write buffer is not NULL.  NOTE - for simplicity, this example assumes the
+	write buffer length is adequate, so does not check for buffer overflows. */
+	( void ) pcCommandString;
+	( void ) xWriteBufferLen;
+	configASSERT( pcWriteBuffer );
+	uint32_t cpuid = MMIO32(CPUID);
+	sprintf( pcWriteBuffer, "\r\nCPUID: 0x%08lx\r\n",cpuid);
+	/* There is no more data to return after this single string, so return
+	pdFALSE. */
+	return pdFALSE;
 }
 /*-----------------------------------------------------------*/
 
