@@ -46,10 +46,9 @@
 /* Example includes. */
 #include "FreeRTOS_CLI.h"
 
+/* Demo application includes. */
 #include "main.h"
 #include "dispatcher.h"
-/* Demo application includes. */
-//#include "serial.h"
 
 /* Dimensions the buffer into which input characters are placed. */
 #define cmdMAX_INPUT_SIZE		50
@@ -68,15 +67,12 @@ available. */
 #ifndef configCLI_BAUD_RATE
 	#define configCLI_BAUD_RATE	115200
 #endif
-
-//extern UART_HandleTypeDef huart2;
 /*-----------------------------------------------------------*/
 
 /*
  * The task that implements the command console processing.
  */
 static void prvCommandConsoleTask( void *pvParameters );
-//void vUARTCommandConsoleStart( uint16_t usStackSize, UBaseType_t uxPriority );
 
 /*-----------------------------------------------------------*/
 

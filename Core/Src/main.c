@@ -23,12 +23,11 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "usb_device.h"
-#include "dispatcher.h"
-#include "FreeRTOS_CLI.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "dispatcher.h"
+#include "FreeRTOS_CLI.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -137,7 +136,6 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   DispatcherThreadInit();
-  //vUARTCommandConsoleStart(configUART_COMMAND_CONSOLE_STACK_SIZE,configUART_COMMAND_CONSOLE_TASK_PRIORITY);
   vCommandConsoleStart(configUART_COMMAND_CONSOLE_STACK_SIZE,(osPriority_t) osPriorityNormal);
   /* USER CODE END RTOS_THREADS */
 
