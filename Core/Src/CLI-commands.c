@@ -219,7 +219,7 @@ BaseType_t xSpacePadding;
 		/* Ensure always terminated. */
 		*pcWriteBuffer = 0x00;
 	}
-	strncpy( pcWriteBuffer, pcHeader, strlen(pcHeader) );
+	strncpy( pcWriteBuffer, pcHeader, strlen(pcHeader)+1 );
 	vTaskList( pcWriteBuffer + strlen( pcHeader ) );
 
 	/* There is no more data to return after this single string, so return
