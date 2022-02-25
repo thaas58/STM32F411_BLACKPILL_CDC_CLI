@@ -61,7 +61,7 @@
 /*
  * Implements the get_cpuid command.
  */
-static BaseType_t prvCpuidCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString );
+static BaseType_t prvGetCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString );
 /*
  * Implements the task-stats command.
  */
@@ -103,12 +103,12 @@ static BaseType_t prvParameterEchoCommand( char *pcWriteBuffer, size_t xWriteBuf
  * Structure that defines the "get_cpuid" command line command.  This
  * returns data from the CPUID register.
  */
-static const CLI_Command_Definition_t xCpuid =
+static const CLI_Command_Definition_t xGet =
 {
-	"get_cpuid", /* The command string to type. */
-	"\r\nget_cpuid:\r\n Displays data from the CPUID register\r\n",
-	prvCpuidCommand, /* The function to run. */
-	0 /* No parameters are expected. */
+	"get", /* The command string to type. */
+	"\r\nget <...>:\r\n Displays data for the specified item(s)\r\n Possible parameters: cpuid, flash_size\r\n",
+	prvGetCommand, /* The function to run. */
+	-1 /* The user can enter any number of commands. */
 };
 
 /* Structure that defines the "task-stats" command line command.  This generates
@@ -183,7 +183,7 @@ static const CLI_Command_Definition_t xParameterEcho =
 void vRegisterCLICommands( void )
 {
 	/* Register all the command line commands defined immediately above. */
-	FreeRTOS_CLIRegisterCommand( &xCpuid );
+	FreeRTOS_CLIRegisterCommand( &xGet );
 	FreeRTOS_CLIRegisterCommand( &xTaskStats );	
 	FreeRTOS_CLIRegisterCommand( &xThreeParameterEcho );
 	FreeRTOS_CLIRegisterCommand( &xParameterEcho );
@@ -208,19 +208,80 @@ void vRegisterCLICommands( void )
 }
 /*-----------------------------------------------------------*/
 
-static BaseType_t prvCpuidCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString )
+static BaseType_t prvGetCommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString )
 {
+	const char *pcParameter;
+	char param_buffer[64];
+	BaseType_t xParameterStringLength, xReturn;
+	static UBaseType_t uxParameterNumber = 0;
 	/* Remove compile time warnings about unused parameters, and check the
 	write buffer is not NULL.  NOTE - for simplicity, this example assumes the
 	write buffer length is adequate, so does not check for buffer overflows. */
 	( void ) pcCommandString;
 	( void ) xWriteBufferLen;
 	configASSERT( pcWriteBuffer );
-	uint32_t cpuid = MMIO32(CPUID);
-	sprintf( pcWriteBuffer, "\r\nCPUID: 0x%08lx\r\n",cpuid);
-	/* There is no more data to return after this single string, so return
-	pdFALSE. */
-	return pdFALSE;
+
+	if( uxParameterNumber == 0 )
+	{
+		/* The first time the function is called after the command has been
+		entered just a header string is returned. */
+		sprintf( pcWriteBuffer, "\r\nget output:" );
+
+		/* Next time the function is called the first parameter will be echoed
+		back. */
+		uxParameterNumber = 1U;
+
+		/* There is more data to be returned as no parameters have been echoed
+		back yet. */
+		xReturn = pdPASS;
+	}
+	else
+	{
+		/* Obtain the parameter string. */
+		pcParameter = FreeRTOS_CLIGetParameter
+					(
+						pcCommandString,		/* The command string itself. */
+						uxParameterNumber,		/* Return the next parameter. */
+						&xParameterStringLength	/* Store the parameter string length. */
+					);
+
+		if( pcParameter != NULL )
+		{
+			memset( pcWriteBuffer, 0x00, xWriteBufferLen );
+			memset( param_buffer, 0x00, sizeof(param_buffer));
+			strncpy(param_buffer,pcParameter,xParameterStringLength);
+			if(!stricmp("cpuid", param_buffer))
+			{
+				uint32_t cpuid = MMIO32(CPUID);
+				sprintf( pcWriteBuffer, "\r\nCPUID: 0x%08lX", cpuid);
+			}
+			else if(!stricmp("flash_size", param_buffer))
+			{
+				uint16_t flash_size = MMIO16(FLASH_SZ);
+				sprintf( pcWriteBuffer, "\r\nFLASH_SIZE: 0x%04X, %d Kbytes", flash_size, flash_size);
+			}
+			else
+			{
+				sprintf(pcWriteBuffer,"\r\nParameter not supported: %s", param_buffer);
+			}
+			/* There might be more parameters to return after this one. */
+			xReturn = pdTRUE;
+			uxParameterNumber++;
+		}
+		else
+		{
+			/* No more parameters were found.  Make sure the write buffer does
+			not contain a valid string. */
+			pcWriteBuffer[ 0 ] = 0x00;
+
+			/* No more data to return. */
+			xReturn = pdFALSE;
+
+			/* Start over the next time this command is executed. */
+			uxParameterNumber = 0;
+		}
+	}
+	return xReturn;
 }
 /*-----------------------------------------------------------*/
 
