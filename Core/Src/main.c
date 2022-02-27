@@ -16,7 +16,7 @@
   ******************************************************************************
   */
 //
-// Modified by PickleRix, alien firmware engineer 02/22/2022
+// Modified by PickleRix, alien firmware engineer 02/26/2022
 //
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
@@ -28,6 +28,7 @@
 /* USER CODE BEGIN Includes */
 #include "dispatcher.h"
 #include "FreeRTOS_CLI.h"
+#include <spi_eeprom.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,7 +109,8 @@ int main(void)
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
   vRegisterCLICommands();
-  /* USER CODE END 2 */
+  EEPROM_SPI_INIT(&hspi1, SPI1_SS_GPIO_Port, SPI1_SS_Pin);
+  /* USER CODE EkND 2 */
 
   /* Init scheduler */
   osKernelInitialize();
@@ -331,6 +333,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(KEY_BUTTON_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : SPI1_SS_Pin */
+   GPIO_InitStruct.Pin = SPI1_SS_Pin;
+   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+   GPIO_InitStruct.Pull = GPIO_NOPULL;
+   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+   HAL_GPIO_Init(SPI1_SS_GPIO_Port, &GPIO_InitStruct);
 
 }
 
