@@ -17,7 +17,7 @@
   ******************************************************************************
   */
 //
-// Modified by PickleRix, alien firmware engineer 02/22/2022
+// Modified by PickleRix, alien firmware engineer 02/26/2022
 //
 /* USER CODE END Header */
 
@@ -64,6 +64,8 @@ void Error_Handler(void);
 #define BLUE_LED_GPIO_Port GPIOC
 #define KEY_BUTTON_Pin GPIO_PIN_0
 #define KEY_BUTTON_GPIO_Port GPIOA
+#define SPI1_SS_Pin GPIO_PIN_4
+#define SPI1_SS_GPIO_Port GPIOA
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
