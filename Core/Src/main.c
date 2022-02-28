@@ -110,7 +110,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   vRegisterCLICommands();
   EEPROM_SPI_INIT(&hspi1, SPI1_SS_GPIO_Port, SPI1_SS_Pin);
-  /* USER CODE EkND 2 */
+  /* USER CODE END 2 */
 
   /* Init scheduler */
   osKernelInitialize();
