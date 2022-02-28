@@ -3,6 +3,9 @@
  *
  *  Created on: Oct 1, 2021
  *      Author: Terry Haas
+ *
+ *  This code is based off of this GitHub project:
+ *  	https://github.com/firebull/STM32-EEPROM-SPI
  */
 //
 // Modified by PickleRix, alien firmware engineer 02/26/2022
