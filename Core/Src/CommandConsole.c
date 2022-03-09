@@ -51,7 +51,7 @@
 #include "dispatcher.h"
 
 /* Dimensions the buffer into which input characters are placed. */
-#define cmdMAX_INPUT_SIZE		50
+#define cmdMAX_INPUT_SIZE		80
 
 /* Dimensions a buffer to be used by the UART driver, if the UART driver uses a
 buffer at all. */
