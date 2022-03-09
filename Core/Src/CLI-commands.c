@@ -357,7 +357,6 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 							num_reads8 = (uint8_t)(num_reads & 0xFF);
 							uint16_t num_reads16 = (uint16_t)(num_reads & 0xFF);
 							sprintf(pcWriteBuffer,"\r\nnum_reads parameter: %d", num_reads8);
-							//HAL_SPI_Receive(&hspi1, Receive, num_reads8, 1000);
 							if(EEPROM_STATUS_COMPLETE == EEPROM_SPI_ReadBuffer((uint8_t *)Receive, offset16, num_reads16))
 							{
 								strncat(pcWriteBuffer,"\r\n SPI read SUCCESS", sizeof("\r\n SPI read SUCCESS")+1);
