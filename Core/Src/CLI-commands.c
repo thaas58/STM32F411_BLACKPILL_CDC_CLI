@@ -411,10 +411,9 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 		else
 		{
 			xReturn = pdTRUE;
+			memset( pcWriteBuffer, 0x00, xWriteBufferLen );
 			if(read_cycle && spi_index < num_reads8)
 			{
-				memset( pcWriteBuffer, 0x00, xWriteBufferLen );
-				memset( param_buffer, 0x00, sizeof(param_buffer));
 				char buffer[6];
 
 				strncat(pcWriteBuffer,"\r\n ", sizeof("\r\n ")+1);
