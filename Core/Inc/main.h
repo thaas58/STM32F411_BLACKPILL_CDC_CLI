@@ -51,6 +51,7 @@ extern "C" {
 /* USER CODE BEGIN EM */
 
 /* USER CODE END EM */
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -59,6 +60,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BLUE_LED_Pin GPIO_PIN_13
+#define BLUE_LED_GPIO_Port GPIOC
+#define KEY_BUTTON_Pin GPIO_PIN_0
+#define KEY_BUTTON_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 #define BLUE_LED_Pin GPIO_PIN_13
 #define BLUE_LED_GPIO_Port GPIOC
