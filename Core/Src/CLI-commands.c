@@ -436,7 +436,7 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 			{
 				if(EEPROM_STATUS_COMPLETE == EEPROM_SPI_WritePage((uint8_t *)Transmit, offset16, spi_index))
 				{
-					strncat(pcWriteBuffer, "\r\nSPI write SUCCESS", sizeof("\r\nSPI write SUCCESS")+1);
+					sprintf(pcWriteBuffer,"\r\nSPI write SUCCESS\r\nBytes written: %d", spi_index);
 				}
 				else
 				{
