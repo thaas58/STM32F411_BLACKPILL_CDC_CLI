@@ -418,7 +418,6 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 				memset( param_buffer, 0x00, sizeof(param_buffer));
 				char buffer[6];
 
-				//xReturn = pdTRUE;
 				strncat(pcWriteBuffer,"\r\n ", sizeof("\r\n ")+1);
 				for(int i = 0; i < 16; i++)
 				{
