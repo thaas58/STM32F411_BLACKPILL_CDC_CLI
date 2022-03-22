@@ -59,9 +59,8 @@
 	#define configINCLUDE_QUERY_HEAP_COMMAND 0
 #endif
 
-#define MAX_SPI_READS 		128
-#define MAX_SPI_FILL_WRITES 128
-#define MAX_SPI_WRITES 		32
+#define MAX_SPI_BUFFER_SIZE 128
+#define MAX_SPI_WRITES 		64
 
 extern SPI_HandleTypeDef hspi1;
 /*
@@ -237,7 +236,7 @@ void vRegisterCLICommands( void )
 
 /*-----------------------------------------------------------*/
 
-uint8_t Transmit[MAX_SPI_WRITES], Transmit_Fill[MAX_SPI_FILL_WRITES], Receive[MAX_SPI_READS];
+uint8_t SPI_Buffer[MAX_SPI_BUFFER_SIZE];
 
 static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, const char *pcCommandString )
 {
@@ -254,7 +253,6 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 	static unsigned long num_reads = 0;
 	static uint8_t num_reads8 = 0;
 	static unsigned long num_writes = 0;
-	static uint8_t num_writes8 = 0;
 	static uint16_t spi_index = 0;
 	/* Remove compile time warnings about unused parameters, and check the
 	write buffer is not NULL.  NOTE - for simplicity, this example assumes the
@@ -273,6 +271,7 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 		read_cycle = false;
 		offset = 0;
 		num_reads = 0;
+		num_writes = 0;
 		num_reads8 = 0;
 		spi_index = 0;
 
@@ -350,9 +349,9 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 					if(num_reads == 0)
 					{
 						num_reads = strtoul(param_buffer, NULL, 0);
-						if(num_reads > MAX_SPI_READS)
+						if(num_reads > MAX_SPI_BUFFER_SIZE)
 						{
-							sprintf(pcWriteBuffer,"\r\nNumber of reads should not be greater than %d : %s", MAX_SPI_READS, param_buffer);
+							sprintf(pcWriteBuffer,"\r\nNumber of reads should not be greater than %d : %s", MAX_SPI_BUFFER_SIZE, param_buffer);
 							xReturn = pdFALSE;
 						}
 						else if(num_reads == 0)
@@ -363,9 +362,8 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 						else
 						{
 							num_reads8 = (uint8_t)(num_reads & 0xFF);
-							uint16_t num_reads16 = (uint16_t)(num_reads & 0xFF);
 							sprintf(pcWriteBuffer,"\r\nnum_reads parameter: %d", num_reads8);
-							if(EEPROM_STATUS_COMPLETE == EEPROM_SPI_ReadBuffer((uint8_t *)Receive, offset16, num_reads16))
+							if(EEPROM_STATUS_COMPLETE == EEPROM_SPI_ReadBuffer((uint8_t *)SPI_Buffer, offset16, (uint16_t)num_reads))
 							{
 								strncat(pcWriteBuffer,"\r\n SPI read SUCCESS", sizeof("\r\n SPI read SUCCESS")+1);
 							}
@@ -393,7 +391,7 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 					}
 					else
 					{
-						Transmit[spi_index++] = (uint8_t)(data & 0xFF);
+						SPI_Buffer[spi_index++] = (uint8_t)(data & 0xFF);
 					}
 				}
 				else
@@ -405,14 +403,10 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 			else if(fill_cycle && uxParameterNumber == 3)
 			{
 				num_writes = strtoul(param_buffer, NULL, 0);
-				if(num_writes > MAX_SPI_FILL_WRITES)
+				if(num_writes > MAX_SPI_BUFFER_SIZE)
 				{
-					sprintf(pcWriteBuffer,"\r\n Number of fill bytes should not be greater than %d", MAX_SPI_FILL_WRITES);
+					sprintf(pcWriteBuffer,"\r\n Number of fill bytes should not be greater than %d", MAX_SPI_BUFFER_SIZE);
 					xReturn = pdFALSE;
-				}
-				else
-				{
-					num_writes8 = (uint8_t) num_writes & 0xFF;
 				}
 			}
 			else if(fill_cycle && uxParameterNumber == 4)
@@ -425,14 +419,14 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 				}
 				else if(data > 0)
 				{
-					for(int i = 0; i < num_writes8; i++)
+					for(int i = 0; i < num_writes; i++)
 					{
-						Transmit_Fill[i] = (uint8_t)(data & 0xFF);
+						SPI_Buffer[i] = (uint8_t)(data & 0xFF);
 					}
 
-					if(EEPROM_STATUS_COMPLETE == EEPROM_SPI_WritePage((uint8_t *)Transmit_Fill, offset16, num_writes8))
+					if(EEPROM_STATUS_COMPLETE == EEPROM_SPI_WriteBuffer((uint8_t *)SPI_Buffer, offset16, (uint16_t)num_writes))
 					{
-						sprintf(pcWriteBuffer,"\r\nSPI FILL SUCCESS\r\nBytes written: %d", num_writes8);
+						sprintf(pcWriteBuffer,"\r\nSPI FILL SUCCESS\r\nBytes written: %ld", num_writes);
 					}
 					else
 					{
@@ -466,7 +460,7 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 				strncat(pcWriteBuffer,"\r\n ", sizeof("\r\n ")+1);
 				for(int i = 0; i < 16; i++)
 				{
-					snprintf(buffer,6,"%02X ",Receive[spi_index]);
+					snprintf(buffer,6,"%02X ",SPI_Buffer[spi_index]);
 					strncat(pcWriteBuffer, buffer, sizeof(buffer)+1);
 					spi_index++;
 					if(spi_index >= num_reads8)
@@ -478,7 +472,7 @@ static BaseType_t prvSPICommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 			}
 			else if(write_cycle && spi_index > 0)
 			{
-				if(EEPROM_STATUS_COMPLETE == EEPROM_SPI_WritePage((uint8_t *)Transmit, offset16, spi_index))
+				if(EEPROM_STATUS_COMPLETE == EEPROM_SPI_WritePage((uint8_t *)SPI_Buffer, offset16, spi_index))
 				{
 					sprintf(pcWriteBuffer,"\r\nSPI write SUCCESS\r\nBytes written: %d", spi_index);
 				}
