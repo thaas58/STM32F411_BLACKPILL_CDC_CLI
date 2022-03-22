@@ -228,12 +228,16 @@ EEPROMStatus EEPROM_SPI_WriteBuffer(uint8_t* pBuffer, uint16_t WriteAddr, uint16
                 pBuffer += EEPROM_PAGESIZE;
             }
 
-            sEE_DataNum = NumOfSingle;
-            pageWriteStatus = EEPROM_SPI_WritePage(pBuffer, WriteAddr, sEE_DataNum);
+            if(NumOfSingle > 0)
+            {
+                sEE_DataNum = NumOfSingle;
+                pageWriteStatus = EEPROM_SPI_WritePage(pBuffer, WriteAddr, sEE_DataNum);
 
-            if (pageWriteStatus != EEPROM_STATUS_COMPLETE) {
-                return pageWriteStatus;
+                if (pageWriteStatus != EEPROM_STATUS_COMPLETE) {
+                    return pageWriteStatus;
+                }
             }
+
         }
     } else { /* WriteAddr is not EEPROM_PAGESIZE aligned  */
         if (NumOfPage == 0) { /* NumByteToWrite < EEPROM_PAGESIZE */
