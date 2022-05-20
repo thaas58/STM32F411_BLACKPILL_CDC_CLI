@@ -35,7 +35,7 @@ typedef struct
 
 
 
-QueueHandle_t xQueue;
+extern QueueHandle_t xQueue;
 
 void DispatcherThreadInit();
 bool CDC_Receive(uint8_t *pData);

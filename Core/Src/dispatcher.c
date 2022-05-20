@@ -16,6 +16,7 @@ static uint8_t buffer_data[64];
 static uint8_t buffer_index;
 static uint32_t buffer_length;
 static bool data_buffer_ready = false;
+QueueHandle_t xQueue;
 
 void DispatcherTask(void *argument);
 
