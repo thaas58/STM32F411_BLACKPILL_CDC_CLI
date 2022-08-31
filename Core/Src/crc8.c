@@ -2,7 +2,7 @@
  * crc8.c
  *
  *  Created on: Aug 31, 2022
- *      Author: Terry Haas
+ *      Author: PickleRix - Alien Firmware Engineer
  */
 
 #include "crc8.h"
