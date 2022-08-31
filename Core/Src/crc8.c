@@ -30,9 +30,8 @@ static const uint8_t CRC_8_TABLE[256] =
 uint8_t Calc_CRC_8(const uint8_t *DataArray, const uint16_t Length)
 {
 	uint16_t i;
-	uint8_t crc_value;
+	uint8_t crc_value = 0xFF;
 
-	crc_value = 0xFF;
 	for (i=0; i<Length; i++)
 		crc_value = CRC_8_TABLE[crc_value ^ DataArray[i]];
 
