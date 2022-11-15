@@ -26,6 +26,7 @@
 
 /* USER CODE BEGIN INCLUDE */
 #include "dispatcher.h"
+#include "stdbool.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,7 +53,7 @@
   */
 
 /* USER CODE BEGIN PRIVATE_TYPES */
-static uint8_t lineState = 0x00;
+static bool host_com_port_open = false;
 /* USER CODE END PRIVATE_TYPES */
 
 /**
@@ -182,6 +183,7 @@ static int8_t CDC_DeInit_FS(void)
   */
 static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 {
+  USBD_SetupReqTypedef * req;
   /* USER CODE BEGIN 5 */
   static uint8_t lineCoding[7] // 115200bps, 1stop, no parity, 8bit
     = { 0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08 };
@@ -189,24 +191,19 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   switch(cmd)
   {
     case CDC_SEND_ENCAPSULATED_COMMAND:
-
-    break;
+    	break;
 
     case CDC_GET_ENCAPSULATED_RESPONSE:
-
-    break;
+    	break;
 
     case CDC_SET_COMM_FEATURE:
-
-    break;
+    	break;
 
     case CDC_GET_COMM_FEATURE:
-
-    break;
+    	break;
 
     case CDC_CLEAR_COMM_FEATURE:
-
-    break;
+    	break;
 
   /*******************************************************************************/
   /* Line Coding Structure                                                       */
@@ -226,24 +223,30 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   /* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
   /*******************************************************************************/
     case CDC_SET_LINE_CODING:
-    memcpy(lineCoding, pbuf, sizeof(lineCoding));
-    break;
+    	memcpy(lineCoding, pbuf, sizeof(lineCoding));
+    	break;
 
     case CDC_GET_LINE_CODING:
-    memcpy(pbuf, lineCoding, sizeof(lineCoding));
-    break;
+    	memcpy(pbuf, lineCoding, sizeof(lineCoding));
+    	break;
 
     case CDC_SET_CONTROL_LINE_STATE:
-    lineState = *pbuf;
-
-    break;
+    	req = (USBD_SetupReqTypedef *)pbuf;
+    	if((req->wValue & 0x0001) != 0)
+    	{
+    		host_com_port_open = true;
+    	}
+    	else
+    	{
+    		host_com_port_open = false;
+    	}
+    	break;
 
     case CDC_SEND_BREAK:
+    	break;
 
-    break;
-
-  default:
-    break;
+    default:
+    	break;
   }
 
   return (USBD_OK);
@@ -333,9 +336,9 @@ static int8_t CDC_TransmitCplt_FS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
 }
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
-uint8_t CDC_Get_LineState()
+bool CDC_ComPort_Open()
 {
-	return(lineState);
+	return(host_com_port_open);
 }
 /* USER CODE END PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
