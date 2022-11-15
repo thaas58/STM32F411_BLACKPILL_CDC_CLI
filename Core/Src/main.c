@@ -110,7 +110,10 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   EEPROM_SPI_INIT(&hspi1, SPI_CS_GPIO_Port, SPI_CS_Pin);
+#ifdef AH20_SUPPORT
+  //Don't try to initialize this hardware unless it exists
   AHT20_I2C_INIT(&hi2c1);
+#endif
   vRegisterCLICommands();
   /* USER CODE END 2 */
 
