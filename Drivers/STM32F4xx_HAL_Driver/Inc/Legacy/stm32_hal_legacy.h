@@ -234,11 +234,9 @@ extern "C" {
 /** @defgroup CRC_Aliases CRC API aliases
   * @{
   */
-#if defined(STM32C0)
-#else
 #define HAL_CRC_Input_Data_Reverse   HAL_CRCEx_Input_Data_Reverse    /*!< Aliased to HAL_CRCEx_Input_Data_Reverse for inter STM32 series compatibility  */
 #define HAL_CRC_Output_Data_Reverse  HAL_CRCEx_Output_Data_Reverse   /*!< Aliased to HAL_CRCEx_Output_Data_Reverse for inter STM32 series compatibility */
-#endif
+
 /**
   * @}
   */
@@ -574,6 +572,7 @@ extern "C" {
 #define HAL_SYSCFG_DisableIOAnalogSwitchVDD       HAL_SYSCFG_DisableIOSwitchVDD
 #endif /* STM32G4 */
 
+
 /**
   * @}
   */
@@ -673,10 +672,7 @@ extern "C" {
 #if defined(STM32U5)
 #define GPIO_AF0_RTC_50Hz                         GPIO_AF0_RTC_50HZ
 #endif /* STM32U5 */
-#if defined(STM32U5)
-#define GPIO_AF0_S2DSTOP                          GPIO_AF0_SRDSTOP
-#define GPIO_AF11_LPGPIO                          GPIO_AF11_LPGPIO1
-#endif /* STM32U5 */
+
 /**
   * @}
   */
@@ -3553,20 +3549,17 @@ extern "C" {
 #define RCC_CLK48CLKSOURCE_PLL2               RCC_ICLK_CLKSOURCE_PLL2
 #define RCC_CLK48CLKSOURCE_PLL1               RCC_ICLK_CLKSOURCE_PLL1
 #define RCC_CLK48CLKSOURCE_MSIK               RCC_ICLK_CLKSOURCE_MSIK
-#define __HAL_RCC_ADC1_CLK_ENABLE             __HAL_RCC_ADC12_CLK_ENABLE
-#define __HAL_RCC_ADC1_CLK_DISABLE            __HAL_RCC_ADC12_CLK_DISABLE
-#define __HAL_RCC_ADC1_IS_CLK_ENABLED         __HAL_RCC_ADC12_IS_CLK_ENABLED
-#define __HAL_RCC_ADC1_IS_CLK_DISABLED        __HAL_RCC_ADC12_IS_CLK_DISABLED
-#define __HAL_RCC_ADC1_FORCE_RESET            __HAL_RCC_ADC12_FORCE_RESET
-#define __HAL_RCC_ADC1_RELEASE_RESET          __HAL_RCC_ADC12_RELEASE_RESET
-#define __HAL_RCC_ADC1_CLK_SLEEP_ENABLE       __HAL_RCC_ADC12_CLK_SLEEP_ENABLE
-#define __HAL_RCC_ADC1_CLK_SLEEP_DISABLE      __HAL_RCC_ADC12_CLK_SLEEP_DISABLE
-#define __HAL_RCC_GET_CLK48_SOURCE            __HAL_RCC_GET_ICLK_SOURCE
-#define __HAL_RCC_PLLFRACN_ENABLE             __HAL_RCC_PLL_FRACN_ENABLE
-#define __HAL_RCC_PLLFRACN_DISABLE            __HAL_RCC_PLL_FRACN_DISABLE
-#define __HAL_RCC_PLLFRACN_CONFIG             __HAL_RCC_PLL_FRACN_CONFIG
-#define IS_RCC_PLLFRACN_VALUE                 IS_RCC_PLL_FRACN_VALUE
-#endif /* STM32U5 */
+
+#define __HAL_RCC_ADC1_CLK_ENABLE            __HAL_RCC_ADC12_CLK_ENABLE
+#define __HAL_RCC_ADC1_CLK_DISABLE          __HAL_RCC_ADC12_CLK_DISABLE
+#define __HAL_RCC_ADC1_IS_CLK_ENABLED       __HAL_RCC_ADC12_IS_CLK_ENABLED
+#define __HAL_RCC_ADC1_IS_CLK_DISABLED      __HAL_RCC_ADC12_IS_CLK_DISABLED
+#define __HAL_RCC_ADC1_FORCE_RESET          __HAL_RCC_ADC12_FORCE_RESET
+#define __HAL_RCC_ADC1_RELEASE_RESET        __HAL_RCC_ADC12_RELEASE_RESET
+#define __HAL_RCC_ADC1_CLK_SLEEP_ENABLE     __HAL_RCC_ADC12_CLK_SLEEP_ENABLE
+#define __HAL_RCC_ADC1_CLK_SLEEP_DISABLE    __HAL_RCC_ADC12_CLK_SLEEP_DISABLE
+#endif
+
 
 /**
   * @}
@@ -3638,6 +3631,7 @@ extern "C" {
 
 #define __RTC_WRITEPROTECTION_ENABLE  __HAL_RTC_WRITEPROTECTION_ENABLE
 #define __RTC_WRITEPROTECTION_DISABLE  __HAL_RTC_WRITEPROTECTION_DISABLE
+
 
 /**
   * @}

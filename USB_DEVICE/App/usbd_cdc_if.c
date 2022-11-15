@@ -232,7 +232,7 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 
     case CDC_SET_CONTROL_LINE_STATE:
     	req = (USBD_SetupReqTypedef *)pbuf;
-    	if(req->wValue & 0x0001)
+    	if((req->wValue & 0x0001) != 0)
     	{
     		host_com_port_open = true;
     	}

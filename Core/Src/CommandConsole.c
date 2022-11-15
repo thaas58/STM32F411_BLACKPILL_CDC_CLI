@@ -139,6 +139,7 @@ BaseType_t xReturned;
 
 	( void ) pvParameters;
 
+
 	/*****************************************
 	for(;;)
 	{
@@ -149,6 +150,7 @@ BaseType_t xReturned;
 		}
 	}
 	*****************************************/
+
 	/* Obtain the address of the output buffer.  Note there is no mutual
 	exclusion on this buffer as it is assumed only one command console interface
 	will be used at any one time. */
