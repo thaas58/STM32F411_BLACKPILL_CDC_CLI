@@ -41,6 +41,7 @@ Mcu.PinsNb=19
 Mcu.ThirdPartyNb=0
 Mcu.UserConstants=
 Mcu.UserName=STM32F411CEUx
+
 MxCube.Version=6.5.0
 MxDb.Version=DB.6.0.50
 NVIC.BusFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false\:true
@@ -61,6 +62,7 @@ NVIC.TIM1_UP_TIM10_IRQn=true\:15\:0\:false\:false\:true\:false\:false\:true\:tru
 NVIC.TimeBase=TIM1_UP_TIM10_IRQn
 NVIC.TimeBaseIP=TIM1
 NVIC.UsageFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false\:true
+
 PA0-WKUP.GPIOParameters=GPIO_Label
 PA0-WKUP.GPIO_Label=KEY_BUTTON
 PA0-WKUP.Signal=GPIO_Input
