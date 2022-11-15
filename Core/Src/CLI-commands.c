@@ -132,7 +132,7 @@ static const CLI_Command_Definition_t xSPI =
 static const CLI_Command_Definition_t xGet =
 {
 	"get", /* The command string to type. */
-	"\r\nget <...>:\r\n Displays data for the specified item(s)\r\n Possible parameters: cpuid, flash_size\r\n",
+	"\r\nget <...>:\r\n Displays data for the specified item(s)\r\n Possible parameters: cpuid, flash_size",
 	prvGetCommand, /* The function to run. */
 	-1 /* The user can enter any number of commands. */
 };
@@ -142,7 +142,7 @@ a table that gives information on each task in the system. */
 static const CLI_Command_Definition_t xTaskStats =
 {
 	"task-stats", /* The command string to type. */
-	"\r\ntask-stats:\r\n Displays a table showing the state of each FreeRTOS task\r\n",
+	"\r\ntask-stats:\r\n Displays a table showing the state of each FreeRTOS task",
 	prvTaskStatsCommand, /* The function to run. */
 	0 /* No parameters are expected. */
 };
@@ -153,7 +153,7 @@ time. */
 static const CLI_Command_Definition_t xThreeParameterEcho =
 {
 	"echo-3-parameters",
-	"\r\necho-3-parameters <param1> <param2> <param3>:\r\n Expects three parameters, echos each in turn\r\n",
+	"\r\necho-3-parameters <param1> <param2> <param3>:\r\n Expects three parameters, echos each in turn",
 	prvThreeParameterEchoCommand, /* The function to run. */
 	3 /* Three parameters are expected, which can take any value. */
 };
@@ -164,7 +164,7 @@ a time. */
 static const CLI_Command_Definition_t xParameterEcho =
 {
 	"echo-parameters",
-	"\r\necho-parameters <...>:\r\n Take variable number of parameters, echos each in turn\r\n",
+	"\r\necho-parameters <...>:\r\n Take variable number of parameters, echos each in turn",
 	prvParameterEchoCommand, /* The function to run. */
 	-1 /* The user can enter any number of commands. */
 };
