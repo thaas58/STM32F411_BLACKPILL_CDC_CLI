@@ -5,4 +5,4 @@ Example STM32F411 Black Pill project utilizing the FreeRTOS command line example
 
 [STM32F411 Documentation](https://www.st.com/en/microcontrollers-microprocessors/stm32f411.html#documentation).
 
-For Nucleo see: [FreeRTOS CLI on Nucleo](https://github.com/thaas58/STM32F411_FreeRTOS_CLI) NOT PUBLIC YET
+For Nucleo see: [FreeRTOS CLI on Nucleo](https://github.com/thaas58/STM32F411_FreeRTOS_CLI)
