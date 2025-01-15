@@ -61,6 +61,7 @@ void Error_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN Private defines */
+#define AH20_SUPPORT
 #define BLUE_LED_Pin GPIO_PIN_13
 #define BLUE_LED_GPIO_Port GPIOC
 #define KEY_BUTTON_Pin GPIO_PIN_0
