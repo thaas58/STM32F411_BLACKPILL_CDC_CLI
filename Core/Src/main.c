@@ -39,6 +39,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define AH20_SUPPORT
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
