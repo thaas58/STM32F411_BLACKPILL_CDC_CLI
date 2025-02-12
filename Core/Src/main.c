@@ -20,6 +20,7 @@
 //
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <locale.h>
 #include "main.h"
 #include "cmsis_os.h"
 #include "usb_device.h"
@@ -28,8 +29,8 @@
 /* USER CODE BEGIN Includes */
 #include "dispatcher.h"
 #include "FreeRTOS_CLI.h"
-#include <spi_eeprom.h>
-#include <aht20.h>
+#include "spi_eeprom.h"
+#include "aht20.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,7 +86,6 @@ void StartDefaultTask(void *argument);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -342,9 +342,19 @@ void StartDefaultTask(void *argument)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
   GPIO_PinState PinState = GPIO_PIN_SET;
+  int second_count = 0;
+  osDelay(40); //Delay for 40 milliseconds before reading sensors
   /* Infinite loop */
   for(;;)
   {
+	if((second_count%5) == 0)
+	{
+		// NULL parameters indicate that functions should store humidity
+		// and temperature values only. The values can be retrieved later
+		// by another thread using the Get_AHT20_Values() function;
+		Get_AHT20_Values(NULL, NULL);
+	}
+	second_count++;
 	PinState = !PinState;
 	HAL_GPIO_WritePin(BLUE_LED_GPIO_Port, BLUE_LED_Pin, PinState);
     osDelay(1000);

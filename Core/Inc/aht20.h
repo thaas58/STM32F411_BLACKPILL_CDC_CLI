@@ -30,11 +30,13 @@ extern "C" {
 #define AHT20_STATUS_CALIBRATED 0x08 // Calibrated Status bit
 #define AHT20_STATUS_ERROR		~(AHT20_STATUS_BUSY|AHT20_STATUS_CALIBRATED)
 
+bool Get_Values(float* humidity, float* temperature);
 bool AHT20_I2C_INIT(I2C_HandleTypeDef * hi2c);
 HAL_StatusTypeDef Is_AHT20_Ready(void);
 HAL_StatusTypeDef Send_AHT20_Data(uint8_t * command_buffer, size_t size);
 HAL_StatusTypeDef Get_AHT20_Data(uint8_t * data_buffer, size_t size);
 uint8_t Get_AHT20_Status(void);
+bool Get_AHT20_Values(float* humidity, float* temperature);
 
 #ifdef __cplusplus
 }

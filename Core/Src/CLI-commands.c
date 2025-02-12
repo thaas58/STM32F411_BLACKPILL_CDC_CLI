@@ -51,6 +51,8 @@
 /* FreeRTOS+CLI includes. */
 #include "FreeRTOS_CLI.h"
 #include "stdbool.h"
+#include "aht20.h"
+
 #ifndef  configINCLUDE_TRACE_RELATED_CLI_COMMANDS
 	#define configINCLUDE_TRACE_RELATED_CLI_COMMANDS 0
 #endif
@@ -132,7 +134,7 @@ static const CLI_Command_Definition_t xSPI =
 static const CLI_Command_Definition_t xGet =
 {
 	"get", /* The command string to type. */
-	"\r\nget <...>:\r\n Displays data for the specified item(s)\r\n Possible parameters: cpuid, flash_size",
+	"\r\nget <...>:\r\n Displays data for the specified item(s)\r\n Possible parameters: cpuid, flash_size, humidity, temperature",
 	prvGetCommand, /* The function to run. */
 	-1 /* The user can enter any number of commands. */
 };
@@ -552,6 +554,21 @@ static BaseType_t prvGetCommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 			{
 				uint16_t flash_size = MMIO16(FLASH_SZ);
 				sprintf( pcWriteBuffer, "\r\nFLASH_SIZE: 0x%04X, %d Kbytes", flash_size, flash_size);
+			}
+			else if(!stricmp("humidity", param_buffer) || !stricmp("h", param_buffer))
+			{
+				float humidity = 0;
+				float temperature = 0;
+				Get_Values(&humidity, &temperature);
+				sprintf( pcWriteBuffer, "\r\n AHT20 Relative Humidity: %5.2f%%, Temperature: %5.2f degrees C", humidity, temperature);
+			}
+			else if(!stricmp("temperature", param_buffer) || !stricmp("t", param_buffer))
+			{
+				float humidity = 0;
+				float temperature = 0;
+				Get_Values(&humidity, &temperature);
+				sprintf( pcWriteBuffer, "\r\n AHT20 Temperature: %5.2f degrees C, Relative Humidity: %5.2f%%",
+						temperature, humidity);
 			}
 			else
 			{

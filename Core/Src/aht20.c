@@ -12,14 +12,55 @@
  */
 
 #include "aht20.h"
+#include "semphr.h"
+
+#define cmdMAX_MUTEX_WAIT		pdMS_TO_TICKS( 300 )
 
 static I2C_HandleTypeDef * AHT20_I2C_BUS_HANDLE;
+static float temperature_store = 0;
+static float humidity_store = 0;
+static SemaphoreHandle_t storeMutex = NULL;
+
+static bool Set_Values(float humidity, float temperature)
+{
+	bool status = false;
+
+	if( xSemaphoreTake( storeMutex, cmdMAX_MUTEX_WAIT ) == pdPASS )
+	{
+		humidity_store = humidity;
+		temperature_store = temperature;
+		/* Must ensure to give the mutex back. */
+		xSemaphoreGive( storeMutex );
+		status = true;
+	}
+	return(status);
+}
+
+bool Get_Values(float* humidity, float* temperature)
+{
+	bool status = false;
+
+	if( xSemaphoreTake( storeMutex, cmdMAX_MUTEX_WAIT ) == pdPASS )
+	{
+		*humidity = humidity_store;
+		*temperature = temperature_store;
+		/* Must ensure to give the mutex back. */
+		xSemaphoreGive( storeMutex );
+		status = true;
+	}
+	return(status);
+}
 
 bool AHT20_I2C_INIT(I2C_HandleTypeDef * hi2c)
 {
 	HAL_StatusTypeDef hal_status = HAL_ERROR;
 	uint8_t command[3];
 	uint8_t status;
+
+	/* Create the semaphore used to access stored humidity and temperature values. */
+	storeMutex = xSemaphoreCreateMutex();
+	configASSERT( storeMutex );
+
 	AHT20_I2C_BUS_HANDLE = hi2c;
 	hal_status = Is_AHT20_Ready();
 	switch(hal_status)
@@ -116,3 +157,60 @@ uint8_t Get_AHT20_Status(void)
 	return(status);
 }
 
+bool Get_AHT20_Values(float* humidity, float* temperature)
+{
+	float _humidity = 0;
+	float _temperature = 0;
+	uint8_t command[3];
+	uint8_t data[6];
+
+	command[0] = AHT20_CMD_TRIGGER;
+	command[1] = 0x33;
+	command[2] = 0x00;
+	if(Send_AHT20_Data(command, 3) != HAL_OK)
+	{
+		return false;
+	}
+
+	// AHT20 datasheet says to wait at least 80 milliseconds for measurement.
+	osDelay(80); //Delay for 80 milliseconds
+	while(Get_AHT20_Status() & AHT20_STATUS_BUSY)
+	{
+		osDelay(10); //Delay for 10 milliseconds
+	}
+
+	if(Get_AHT20_Data(data, 6) != HAL_OK)
+	{
+		return false;
+	}
+
+	// Extract and calculate humidity percentage
+	uint32_t h_data = data[1];
+	h_data <<= 8;
+	h_data |= data[2];
+	h_data <<= 4;
+	h_data |= data[3] >> 4;
+	_humidity = ((float)h_data * 100) / 0x100000;
+
+	// Extract and calculate temperature
+	uint32_t t_data = data[3] & 0x0F;
+	t_data <<= 8;
+	t_data |= data[4];
+	t_data <<= 8;
+	t_data |= data[5];
+	_temperature = ((float)t_data * 200 / 0x100000) - 50;
+
+	if(humidity != NULL)
+	{
+		*humidity = _humidity;
+	}
+
+	if(temperature != NULL)
+	{
+		*temperature = _temperature;
+	}
+
+	Set_Values(_humidity, _temperature);
+
+	return true;
+}
