@@ -347,14 +347,16 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
+#ifdef AH20_SUPPORT
 	if((second_count%5) == 0)
 	{
 		// NULL parameters indicate that functions should store humidity
 		// and temperature values only. The values can be retrieved later
-		// by another thread using the Get_AHT20_Values() function;
+		// by another thread using the Get_Values() function;
 		Get_AHT20_Values(NULL, NULL);
 	}
 	second_count++;
+#endif
 	PinState = !PinState;
 	HAL_GPIO_WritePin(BLUE_LED_GPIO_Port, BLUE_LED_Pin, PinState);
     osDelay(1000);
