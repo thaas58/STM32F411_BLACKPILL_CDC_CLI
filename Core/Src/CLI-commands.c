@@ -134,7 +134,7 @@ static const CLI_Command_Definition_t xSPI =
 static const CLI_Command_Definition_t xGet =
 {
 	"get", /* The command string to type. */
-	"\r\nget <...>:\r\n Displays data for the specified item(s)\r\n Possible parameters: cpuid, flash_size, humidity, temperature",
+	"\r\nget <...>:\r\n Displays data for the specified item(s)\r\n Possible parameters: cpuid, flash_size, humidity, temperature, reset_reg",
 	prvGetCommand, /* The function to run. */
 	-1 /* The user can enter any number of commands. */
 };
@@ -569,6 +569,28 @@ static BaseType_t prvGetCommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 				Get_Values(&humidity, &temperature);
 				sprintf( pcWriteBuffer, "\r\n AHT20 Temperature: %5.2f degrees C, Relative Humidity: %5.2f%%",
 						temperature, humidity);
+			}
+			else if(!stricmp("reset_reg", param_buffer) || !stricmp("rr", param_buffer))
+			{
+				uint32_t csr = RCC->CSR;
+				if(csr & RCC_CSR_PORRSTF)
+				{
+					sprintf( pcWriteBuffer, "\r\n Power ON Reset");
+				}
+				else if(csr & RCC_CSR_PINRSTF)
+				{
+					sprintf( pcWriteBuffer, "\r\n Pin Reset");
+				}
+				else if(csr & RCC_CSR_WDGRSTF)
+				{
+					sprintf( pcWriteBuffer, "\r\n Watchdog Reset");
+				}
+				else if(csr & RCC_CSR_SFTRSTF)
+				{
+					sprintf( pcWriteBuffer, "\r\n Software Reset");
+				}
+				// Clear reset flags
+				RCC->CSR |= RCC_CSR_RMVF;
 			}
 			else
 			{
