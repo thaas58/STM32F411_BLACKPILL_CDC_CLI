@@ -589,6 +589,10 @@ static BaseType_t prvGetCommand( char *pcWriteBuffer, size_t xWriteBufferLen, co
 				{
 					sprintf( pcWriteBuffer, "\r\n Software Reset");
 				}
+				else
+				{
+					sprintf( pcWriteBuffer, "\r\n No Reset Bits Detected");
+				}
 				// Clear reset flags
 				RCC->CSR |= RCC_CSR_RMVF;
 			}
